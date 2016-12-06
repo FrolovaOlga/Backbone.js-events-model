@@ -1,23 +1,49 @@
- $(function (){
- 	var object = {}; 
+ var app = app || {};
+ $ (function (){
  	
+ 	app.MyObject = Backbone.Model.extend({
+ 		defaults:{
+ 			name:"name",
+ 			description:"-",
+ 			size: 100
+ 		},
+ 		initialize: function(){
+ 			console.log('obj created');
+ 		
+ 			this.on('change',function(){	
+ 			console.log('obj change');
+ 			         var json = app.myObject.changedAttributes();
+ 	              console.log(json);
  	
- 	_.extend(object, Backbone.Events);
+ 			});
+ 		},
  	
- 	object.on("alert", function(msg) {  
- 		     alert("Triggered" + msg); 
+ 			validate: function(attrs) {
+ 				if (attrs.size>1000) {
+ 					console.log('Incorrect size')
+ 					return 'Incorrect size';
+					}
+ 			},
+ 		increaseSize: function(){
+ 		app.myObject.set({
+ 			size: this.get('size')+100
+ 		},{
+ 				validate:true
+ 				});
+ 			
+ 		},
+ 		
  	});
  	
- 	
- 	object.on("alert", function(msg) {
- 		 console.log("Triggered" + msg); 
+ 	app.myObject = new app.MyObject({
+ 		name:"Rocket",
+ 		description: "super"
+ });
+         app.myObject.set({
+ 			size: 250,
+ 				
+ });
+ $('#myButton').live('click',function(){
+ 		app.myObject.increaseSize();
  	});
- 	
- 	
-	object.trigger("alert","an event");
- 	
- 	$('#myButton').on('click',function(){
- 		object.trigger("alert","clicked");
- 	});
-	
- }); 
+ });
